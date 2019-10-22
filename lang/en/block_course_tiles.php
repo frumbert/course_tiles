@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'block_course_tiles', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'block_course_tiles', language 'en', branch 'MOODLE_36_STABLE'
  *
  * @package   block_course_tiles
- * @copyright 1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @copyright  tim@avideelearning.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
