@@ -19,6 +19,7 @@
  *
  * @package    block_course_tiles
  * @copyright  tim@avideelearning.com
+ * @source     https://github.com/frumbert/course_tiles
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
