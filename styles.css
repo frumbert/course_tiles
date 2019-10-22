@@ -1,0 +1,24 @@
+.block_course_tiles .course-tile {
+	position: relative;
+	overflow: hidden;
+}
+.block_course_tiles .course-tile::after {
+	position: absolute;
+	content:  attr(data-status);
+	width: 130px;
+    height: 130px;
+    left: -45px;
+    top: 47px;
+	transform-origin: top left;
+	transform: rotate(-45deg);
+	color: white;
+	background-image: linear-gradient(to bottom, #0f9e94, #0f9e94 25%, #283a6c 25%, #283a6c 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0));
+	font-size: 1.2rem;
+    line-height: calc(125px - 1.75rem);
+    text-align: center;
+}
+
+.block_course_tiles .unlist div.column.c1 {
+	margin: 0 auto;
+	max-width: 1280px;
+}
