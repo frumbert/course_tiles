@@ -22,3 +22,91 @@
 	margin: 0 auto;
 	max-width: 1280px;
 }
+
+.course-catalogue {
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 10px;
+}
+.course-catalogue .course-tile {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: white;
+  transform: box-shadow 0.5s ease;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1em;
+}
+.course-catalogue .course-tile:hover {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+}
+.course-catalogue .course-tile .courseimage img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 5px 5px 0 0;
+}
+.course-catalogue .course-tile .tile-name {
+  font-weight: bold;
+  padding: 5px;
+  font-size: 1.2em;
+  color: #0da89e;
+}
+.course-catalogue .course-tile .tile-summary {
+  flex: 1;
+  padding: 5px;
+  font-size: 1.1em;
+}
+.course-catalogue .course-tile .tile-button {
+  text-align: center;
+}
+.course-catalogue .course-tile .tile-button button {
+  cursor: pointer;
+  background-color: #2d4277 !important;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  padding: 0.5em 1.5em;
+  font-weight: normal;
+  transition: background-color 0.3s ease;
+}
+.course-catalogue .course-tile .tile-button button:hover {
+  background-color: #0da89e !important;
+}
+.course-catalogue .course-tile .tile-button button.coming-soon-btn {
+  background-color: #b8b8b8 !important;
+}
+.course-catalogue .course-tile .tile-button button.coming-soon-btn:hover {
+  background-color: #c8c8c8 !important;
+}
+.course-catalogue .course-tile .tile-admin {
+  text-align: center;
+  margin: 1em 0 0;
+}
+.course-catalogue .course-tile .tile-admin .action-btn {
+  position: relative;
+  border-radius: 50%;
+  margin: 0 10px;
+  border: none;
+  background: none;
+  padding-top: 3px;
+  outline: none;
+}
+.course-catalogue .course-tile .tile-admin .action-btn .action-btn-hover-text {
+  position: absolute;
+  top: 2.5em;
+  padding: 10px;
+  white-space: nowrap;
+  background-color: #939ba4;
+  border-radius: 5px;
+  color: white;
+  display: none;
+}
+.course-catalogue .course-tile .tile-admin .action-btn:hover {
+  background-color: #eee;
+}
+.course-catalogue .course-tile .tile-admin .action-btn:hover .action-btn-hover-text {
+  display: block;
+}
