@@ -89,6 +89,8 @@ class block_course_tiles extends block_list {
     protected function render_course_tiles() {
         global $CFG;
 
+        $category = optional_param("category", 0, PARAM_INT);
+
         $chelper = new \coursecat_helper();
         $chelper->set_show_courses(self::COURSECAT_SHOW_COURSES_EXPANDED)->
                 set_courses_display_options(array(
@@ -99,18 +101,36 @@ class block_course_tiles extends block_list {
                     'viewmoretext' => new \lang_string('fulllistofcourses')));
 
         $chelper->set_attributes(array('class' => 'frontpage-course-list-all'));
+
+        $categorydata = [];
+        $categories = \core_course_category::make_categories_list();
+        if (count($categories) === 1) {
+            $category = 0;
+        } else {
+            foreach ($categories as $key => $value) {
+                $cssclass = "catalogue-item category-{$key}";
+                $url = new moodle_url($this->page->url, array("category" => $key));
+                if ($key === $category) $cssclass .= " current";
+                $categorydata[] = [
+                    "url" => $url->out(),
+                    "name" => $value,
+                    "cssclass" => $cssclass
+                ];
+            }
+        }
+
         $courses = \core_course_category::get(0)->get_courses($chelper->get_courses_display_options());
         $totalcount = \core_course_category::get(0)->get_courses_count($chelper->get_courses_display_options());
         if (!$totalcount && !$this->page->user_is_editing() && has_capability('moodle/course:create', context_system::instance())) {
             // Print link to create a new course, for the 1st available category.
             return $this->add_new_course_button();
         }
-        return $this->catalogue_courses($chelper, $courses, $totalcount);
+        return $this->catalogue_courses($chelper, $courses, $totalcount, $category, $categorydata);
     }
 
 
 	// copied from course renderer - we want to override coursecat_coursebox but it and this function were protected so we have to dupe/rename them
-    protected function catalogue_courses(\coursecat_helper $chelper, $courses, $totalcount = null) {
+    protected function catalogue_courses(\coursecat_helper $chelper, $courses, $totalcount = null, $category = 0, $categorydata = []) {
         global $CFG, $OUTPUT;
         if ($totalcount === null) {
             $totalcount = count($courses);
@@ -162,13 +182,16 @@ class block_course_tiles extends block_list {
 
         $coursedata = [];
         foreach ($courses as $course) {
-			$coursedata[] = $this->catalogue_coursebox($chelper, $course);
+            if (($category === 0) || ($category > 0 && $course->category === (string)$category)) {
+			    $coursedata[] = $this->catalogue_coursebox($chelper, $course);
+            }
         }
 
 
 		// {{.}} tries to output a string; if it's not stringable then you get an exception
 		// {{# somevar}} tries to eval somevar from a php point of view
 		$data = [
+            "categories" => $categorydata,
 			"courses" => $coursedata,
 			"pagingbar" => $pagingbar,
 			"morelink" => $morelink,

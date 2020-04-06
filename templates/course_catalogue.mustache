@@ -1,7 +1,14 @@
 <div class='theme-boost-campus course-catalogue'>
-{{#courses}}
-{{> block_course_tiles/course_tile}}
-{{/courses}}
+	<div class='course-catalogue-category-tabs'>
+	{{#categories}}
+	{{> block_course_tiles/category_tab}}
+	{{/categories}}
+	</div>
+	<div class='course-catalogue-course-tiles'>
+	{{#courses}}
+	{{> block_course_tiles/course_tile}}
+	{{/courses}}
+	</div>
 </div>
 
 {{#pagingbar}}
