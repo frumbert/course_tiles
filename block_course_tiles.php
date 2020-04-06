@@ -101,16 +101,21 @@ class block_course_tiles extends block_list {
                     'viewmoretext' => new \lang_string('fulllistofcourses')));
 
         $chelper->set_attributes(array('class' => 'frontpage-course-list-all'));
-
         $categorydata = [];
+        $description = '';
         $categories = \core_course_category::make_categories_list();
         if (count($categories) === 1) {
             $category = 0;
         } else {
             foreach ($categories as $key => $value) {
+                if ($category === 0) $category = $key; // select first tab
                 $cssclass = "catalogue-item category-{$key}";
                 $url = new moodle_url($this->page->url, array("category" => $key));
-                if ($key === $category) $cssclass .= " current";
+                if ($key === $category) {
+                    $cssclass .= " current";
+                    $cat = core_course_category::get($key);
+                    $description = format_text($cat->description, $cat->descriptionformat);
+                }
                 $categorydata[] = [
                     "url" => $url->out(),
                     "name" => $value,
@@ -125,12 +130,12 @@ class block_course_tiles extends block_list {
             // Print link to create a new course, for the 1st available category.
             return $this->add_new_course_button();
         }
-        return $this->catalogue_courses($chelper, $courses, $totalcount, $category, $categorydata);
+        return $this->catalogue_courses($chelper, $courses, $totalcount, $category, $categorydata, $description);
     }
 
 
 	// copied from course renderer - we want to override coursecat_coursebox but it and this function were protected so we have to dupe/rename them
-    protected function catalogue_courses(\coursecat_helper $chelper, $courses, $totalcount = null, $category = 0, $categorydata = []) {
+    protected function catalogue_courses(\coursecat_helper $chelper, $courses, $totalcount = null, $category = 0, $categorydata = [], $description = '') {
         global $CFG, $OUTPUT;
         if ($totalcount === null) {
             $totalcount = count($courses);
@@ -191,6 +196,8 @@ class block_course_tiles extends block_list {
 		// {{.}} tries to output a string; if it's not stringable then you get an exception
 		// {{# somevar}} tries to eval somevar from a php point of view
 		$data = [
+            "showcategories" => count($categorydata) > 0,
+            "description" => $description,
             "categories" => $categorydata,
 			"courses" => $coursedata,
 			"pagingbar" => $pagingbar,

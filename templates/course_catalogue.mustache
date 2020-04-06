@@ -1,9 +1,14 @@
 <div class='theme-boost-campus course-catalogue'>
+	{{#showcategories}}
 	<div class='course-catalogue-category-tabs'>
-	{{#categories}}
-	{{> block_course_tiles/category_tab}}
-	{{/categories}}
+		{{#categories}}
+		{{> block_course_tiles/category_tab}}
+		{{/categories}}
 	</div>
+	{{#description}}
+		<div class='course-catalogue-category-description'>{{{description}}}</div>
+	{{/description}}
+	{{/showcategories}}
 	<div class='course-catalogue-course-tiles'>
 	{{#courses}}
 	{{> block_course_tiles/course_tile}}
