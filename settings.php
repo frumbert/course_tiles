@@ -25,13 +25,10 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    $options = array('all'=>get_string('allcourses', 'block_course_tiles'), 'own'=>get_string('owncourses', 'block_course_tiles'));
-
-    $settings->add(new admin_setting_configselect('block_course_tiles_adminview', get_string('adminview', 'block_course_tiles'),
-                       get_string('configadminview', 'block_course_tiles'), 'all', $options));
-
-    $settings->add(new admin_setting_configcheckbox('block_course_tiles_hideallcourseslink', get_string('hideallcourseslink', 'block_course_tiles'),
-                       get_string('confighideallcourseslink', 'block_course_tiles'), 0));
+    $settings->add(new admin_setting_configcheckbox('block_course_tiles_showcategories',
+                    get_string('showcategories', 'block_course_tiles'),
+                    get_string('configshowcategories', 'block_course_tiles'),
+                    0));
 }
 
 
