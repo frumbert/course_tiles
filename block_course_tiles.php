@@ -57,10 +57,17 @@ class block_course_tiles extends block_list {
     }
 
     function get_content() {
-        global $CFG, $USER, $DB, $OUTPUT;
+        global $CFG, $OUTPUT;
 
         if($this->content !== NULL) {
             return $this->content;
+        }
+
+        $showcategory = false;
+        if (isset($CFG->block_course_tiles_showcategories)) {
+           if ( (int)$CFG->block_course_tiles_showcategories == 1){
+               $showcategory = true;
+           }
         }
 
         $this->content = new stdClass;
@@ -71,7 +78,7 @@ class block_course_tiles extends block_list {
         $icon = $OUTPUT->pix_icon('i/course', get_string('course'));
 
         $this->content->footer = '';
-        $this->content->items[] = $this->render_course_tiles();
+        $this->content->items[] = $this->render_course_tiles($showcategory);
         return $this->content;
     }
 
@@ -86,8 +93,8 @@ class block_course_tiles extends block_list {
 
 
 	// copied from course renderer, because of namespace issues and they made the actual function that is most useful protected
-    protected function render_course_tiles() {
-        global $CFG;
+    protected function render_course_tiles($showcategorymenu = false) {
+        global $CFG, $PAGE;
 
         $category = optional_param("category", 0, PARAM_INT);
 
@@ -102,40 +109,49 @@ class block_course_tiles extends block_list {
 
         $chelper->set_attributes(array('class' => 'frontpage-course-list-all'));
         $categorydata = [];
-        $description = '';
         $categories = \core_course_category::make_categories_list();
-        if (count($categories) === 1) {
-            $category = 0;
-        } else {
-            foreach ($categories as $key => $value) {
-                if ($category === 0) $category = $key; // select first tab
-                $cssclass = "catalogue-item category-{$key}";
-                $url = new moodle_url($this->page->url, array("category" => $key));
-                if ($key === $category) {
-                    $cssclass .= " current";
+        if ($showcategorymenu) {
+            $description = '';
+            if (count($categories) === 1) {
+                $category = 0;
+            } else {
+                foreach ($categories as $key => $value) {
+                    if ($category === 0) $category = $key; // select first tab
+                    $cssclass = "catalogue-item category-{$key}";
+                    $url = new moodle_url($this->page->url, array("category" => $key));
                     $cat = core_course_category::get($key);
-                    $description = format_text($cat->description, $cat->descriptionformat);
+                    if ((int)$cat->visible===0) $cssclass .= " dimmed";
+                    if ($key === $category) {
+                        $cssclass .= " current";
+                        // rewrite plugin urls using the category as the context (since it was authored in the category editor)
+                        $description = file_rewrite_pluginfile_urls($cat->description, 'pluginfile.php', \context_coursecat::instance($key)->id, 'coursecat', 'description', NULL);
+                        // assume nocleaning - a category author already made this, so we can assume it to be trusted
+                        $description = format_text($description, $cat->descriptionformat, ['noclean' => true, 'context' => \context_coursecat::instance($key)]);
+                    }
+                    $categorydata[] = [
+                        "url" => $url->out(),
+                        "name" => $value,
+                        "cssclass" => $cssclass
+                    ];
                 }
-                $categorydata[] = [
-                    "url" => $url->out(),
-                    "name" => $value,
-                    "cssclass" => $cssclass
-                ];
             }
+        } else {
+            $category = 0;
         }
 
         $courses = \core_course_category::get(0)->get_courses($chelper->get_courses_display_options());
         $totalcount = \core_course_category::get(0)->get_courses_count($chelper->get_courses_display_options());
         if (!$totalcount && !$this->page->user_is_editing() && has_capability('moodle/course:create', context_system::instance())) {
             // Print link to create a new course, for the 1st available category.
-            return $this->add_new_course_button();
+            $courserenderer = $PAGE->get_renderer('core', 'course');
+            return $courserenderer->add_new_course_button();
         }
-        return $this->catalogue_courses($chelper, $courses, $totalcount, $category, $categorydata, $description);
+        return $this->catalogue_courses($chelper, $courses, $totalcount, $category, $categorydata, $description, $showcategorymenu);
     }
 
 
 	// copied from course renderer - we want to override coursecat_coursebox but it and this function were protected so we have to dupe/rename them
-    protected function catalogue_courses(\coursecat_helper $chelper, $courses, $totalcount = null, $category = 0, $categorydata = [], $description = '') {
+    protected function catalogue_courses(\coursecat_helper $chelper, $courses, $totalcount = null, $category = 0, $categorydata = [], $description = '', $showcategorymenu = false) {
         global $CFG, $OUTPUT;
         if ($totalcount === null) {
             $totalcount = count($courses);
