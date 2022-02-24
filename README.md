@@ -11,6 +11,7 @@ Sample stylesheet
 -----------------
 Implement this in your themes SCSS setting. Uses css grid.
 
+```css
 .course-catalogue.course-catalogue-has-menu {
     display: grid;
     grid-auto-flow: row dense;
@@ -138,5 +139,6 @@ Implement this in your themes SCSS setting. Uses css grid.
 		}
 	}
 }
+```
 
 Licence: GPL3, as per moodle.
