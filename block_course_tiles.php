@@ -261,7 +261,8 @@ class block_course_tiles extends block_list {
         $result['enrollable'] = is_siteadmin() || $enrollable;
 
         // status text shown on top-left of tile
-        $result['status'] = get_string('default_status_text', 'block_course_tiles');
+        $result['status'] = $this->get_default_status($course, $USER);
+
         $info = new completion_info($course);
         if (completion_info::is_enabled_for_site() && $info->is_enabled()) {
             $completions = $info->get_completions($USER->id);
@@ -314,6 +315,37 @@ class block_course_tiles extends block_list {
         }
 
         return $result;
+    }
+
+    // status is added to the tile as a data attribute, which you can pick up on stylesheets
+    protected function get_default_status($course,$user) {
+        global $DB;
+
+        // if the course has a paypal enrolment that is enabled, grab the price and use that as the default status
+        $row = $DB->get_record_sql("
+            SELECT cost FROM {enrol}
+            WHERE courseid = :id
+            AND enrol = 'paypal'
+            AND status = 0
+            ORDER BY sortorder ASC", array('id' => $course->id), IGNORE_MULTIPLE);
+        if ($row) {
+            $cost = floatval($row->cost);
+            if ($cost > 0) {
+                return '$'.$cost;
+            }
+        }
+
+        // if the course has a custom attribute called 'price', use that as the status
+        // https://moodle.org/mod/forum/discuss.php?d=394717#p1687472
+        foreach ($course->customfields as $field) {
+            if ($field->get_field()->get('shortname') == 'price' && $field->get_value() > '') {
+                return $field->get_value();
+            }
+        }
+
+        // otherwise return the default status text
+        return get_string('default_status_text', 'block_course_tiles');
+
     }
 
 }
