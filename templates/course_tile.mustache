@@ -18,7 +18,7 @@
 	</a>
 	{{/enrollable}}
 	{{#enrollable}}
-	<a href="/course/view.php?id={{id}}">
+	<a href="{{config.wwwroot}}/course/view.php?id={{id}}">
 		<button class="enter-course-btn" style="outline: none;">
 			<i class="fa fa-book"></i>
 			{{#str}}entercourse_button,block_course_tiles{{/str}}
@@ -28,25 +28,25 @@
 </div>
 {{#admin}}
 <div class="tile-admin">
-	<a href="/user/index.php?id={{id}}">
+	<a href="{{config.wwwroot}}/user/index.php?id={{id}}">
 		<button class="action-btn btn1">
 			<div class="action-btn-hover-text">Enrol</div>
 			<i class="fa fa-users"></i>
 		</button>
 	</a>
-	<a href="/enrol/instances.php?id={{id}}">
+	<a href="{{config.wwwroot}}/enrol/instances.php?id={{id}}">
 		<button class="action-btn btn2">
 			<div class="action-btn-hover-text">Enrolment methods</div>
 			<i class="fa fa-sign-in"></i>
 		</button>
 	</a>
-	<a href="/course/delete.php?id={{id}}">
+	<a href="{{config.wwwroot}}/course/delete.php?id={{id}}">
 		<button class="action-btn btn3">
 			<div class="action-btn-hover-text">Delete</div>
 			<i class="fa fa-remove"></i>
 		</button>
 	</a>
-	<a href="/course/edit.php?id={{id}}">
+	<a href="{{config.wwwroot}}/course/edit.php?id={{id}}">
 		<button class="action-btn btn3">
 			<div class="action-btn-hover-text">Edit course</div>
 			<i class="fa fa-cog"></i>
